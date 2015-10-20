@@ -36,7 +36,7 @@ class Movie(db.Model):
 
     __tablename__ = "movies"
 
-    movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    movie_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(100), nullable=True)
@@ -51,7 +51,7 @@ class Rating(db.Model):
 
     __tablename__ = "ratings"
 
-    rating_id = db.Column(db.Integer, primary_key=True)
+    rating_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     movie_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
     score = db.Column(db.Integer, nullable=False)
@@ -60,7 +60,7 @@ class Rating(db.Model):
         """ Provide helpful representation when printed."""
 
         return "<Rating rating_id=%s movie_id=%s user_id=%s score=%s>" % (self.rating_id, self.movie_id, self.user_id, self.score)
-        
+
 
 ##############################################################################
 # Helper functions
