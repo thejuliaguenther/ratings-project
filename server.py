@@ -50,12 +50,36 @@ def user_details(user_id):
         movie_name = movie.title
         movie_titles_and_scores[movie_name] = movie_score
 
-
-
     return render_template("user_details.html", 
                             user_age=user_age, 
                             user_zipcode=user_zipcode, 
                             movie_titles_and_scores=movie_titles_and_scores)
+
+
+@app.route('/movies')
+def show_movies():
+    movies = Movie.query.order_by(Movie.title).all()
+
+    return render_template("movies.html", movies=movies)
+
+
+@app.route('/movies/<int:movie_id>')
+def movie_details(movie_id):
+    rating_objects_list = Rating.query.filter(Rating.movie_id == movie_id).all()
+
+    movie_ratings_dictionary = {}
+    for rating_object in rating_objects_list:
+        rating_score = rating_object.score
+        rating_user = rating_object.user_id
+        movie_ratings_dictionary[rating_user] = rating_score
+
+    movie = Movie.query.get(movie_id)
+    movie_title = movie.title
+
+    return render_template("movie_ratings.html", 
+                            movie_ratings_dictionary = movie_ratings_dictionary, 
+                            movie_title = movie_title)
+
 
 
 @app.route('/login')
