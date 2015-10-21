@@ -32,18 +32,30 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
-@app.route('/users/<int: user.user_id')
-def user_details():
+
+@app.route('/users/<int:user_id>')
+def user_details(user_id):
     """Shows detail;s about a user clicked on, including age, zipcode, the list 
     of movies that they reviewed, and their ratings for those movies."""
 
-    user = User.query.get(user.user_id).first() #gets the object associated with the user
+    user = User.query.get(user_id) #gets the object associated with the user
     user_age = user.age
     user_zipcode = user.zipcode
     user_ratings = user.ratings
-    print user_ratings
 
-    return redirect("/")
+    movie_titles_and_scores = {}
+    for rating in user_ratings:
+        movie = Movie.query.get(rating.movie_id)
+        movie_score = rating.score
+        movie_name = movie.title
+        movie_titles_and_scores[movie_name] = movie_score
+
+
+
+    return render_template("user_details.html", 
+                            user_age=user_age, 
+                            user_zipcode=user_zipcode, 
+                            movie_titles_and_scores=movie_titles_and_scores)
 
 
 @app.route('/login')
