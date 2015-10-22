@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<p>Hello, {{ username }}.</p>
+
+<form action="/" method="POST">
+    <select>
+        <option value="1">1 (min)</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5 (max)</option>
+    </select>
+    <input type="submit" value="Submit rating (1-5)">
+</form>
+
+
+
+{% endblock %}

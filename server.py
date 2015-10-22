@@ -18,11 +18,39 @@ app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
 
-@app.route('/')
+@app.route('/', methods=["POST", "GET"])
 def index():
     """Homepage."""
 
     return render_template("homepage.html")
+
+
+@app.route('/login')
+def show_login_form():
+    """Shows login form."""
+    return render_template("login.html")
+
+
+@app.route('/process_login', methods=["POST"])
+def process_login():
+    """Checks if the user exists in the User table. If not, creates a new user."""
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    user_object = User.query.filter(User.email == username).first()
+
+    if not user_object:
+        new_user = User(email=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+    else:
+        user_email= user_object.email
+        user_password = user_object.password
+        if user_password != password:
+            return redirect("/login")
+        else:
+            session['user_name'] = user_email
+    return redirect("/")
 
 
 @app.route('/users')
@@ -74,41 +102,26 @@ def movie_details(movie_id):
         movie_ratings_dictionary[rating_user] = rating_score
 
     movie = Movie.query.get(movie_id)
-    movie_title = movie.title
 
     return render_template("movie_ratings.html", 
                             movie_ratings_dictionary = movie_ratings_dictionary, 
-                            movie_title = movie_title)
+                            movie = movie)
 
 
-
-@app.route('/login')
-def show_login_form():
-    """Shows login form."""
-
-    return render_template("login.html")
-
-
-@app.route('/process_login', methods=["POST"])
-def process_login():
-    """Checks if the user exists in the User table. If not, creates a new user."""
-    username = request.form.get("username")
-    password = request.form.get("password")
-
-    user_object = User.query.filter(User.email == username).first()
-
-    if not user_object:
-        new_user = User(email=username, password=password)
-        db.session.add(new_user)
-        db.session.commit()
+@app.route('/rating_form/<int:movie_id>')
+def rate_movie(movie_id):
+    if session['user_name']: # or if user_name in session
+        username = session.keys()
+        print username
+        username = username[0]
+        return render_template("rating_form.html", 
+                                movie_id = movie_id, 
+                                username = username)
     else:
-        user_email= user_object.email
-        user_password = user_object.password
-        if user_password != password:
-            return redirect("/login")
-        else:
-            session['user_name'] = user_email
-    return redirect("/")
+        return redirect("/login")
+
+
+
 
 
 

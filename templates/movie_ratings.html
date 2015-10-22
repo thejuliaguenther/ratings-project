@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Movie Ratings for {{ movie.title }}</h1>
+    <h2><a href="/rating_form/{{ movie.movie_id }}">Add review</a></h2>
+    <ul>
+        {% for rating in movie_ratings_dictionary.items() %}
+            <li><a href="/users/{{ rating[0] }}">{{ rating[0] }}</a> Score: {{ rating[1] }}</li>
+        {% endfor %}
+    </ul>
+    
+{% endblock %}
