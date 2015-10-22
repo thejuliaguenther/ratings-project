@@ -49,7 +49,8 @@ def process_login():
         if user_password != password:
             return redirect("/login")
         else:
-            session['user_name'] = user_email
+            while user_email not in session.values():
+                session['user_name'] = user_email
     return redirect("/")
 
 
@@ -111,7 +112,7 @@ def movie_details(movie_id):
 @app.route('/rating_form/<int:movie_id>')
 def rate_movie(movie_id):
     if session['user_name']: # or if user_name in session
-        username = session.keys()
+        username = session.values()
         print username
         username = username[0]
         return render_template("rating_form.html", 
@@ -121,7 +122,22 @@ def rate_movie(movie_id):
         return redirect("/login")
 
 
+@app.route('/rating_updated', methods=["POST"])
+def update_rating():
+    score = request.form.get("score")
+    movie_id = request.form.get("movie_id")
+    user_id_object = User.query.filter(User.email == session["user_name"]).first()
+    user_id = user_id_object.user_id
+    print session["user_name"]
+    print movie_id
+    print score
+    print user_id
+    # Rating.insert().values(score = score, movie_id = movie_id, user_id = user_id)
 
+    rating = Rating(score = score, movie_id = movie_id, user_id = user_id)
+    db.session.add(rating)
+    db.session.commit()
+    return render_template("rating_updated.html")
 
 
 

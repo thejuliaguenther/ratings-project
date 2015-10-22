@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<p>Hello, {{ username }}.</p>
+<p> {{ username }} </p>
 
-<form action="/" method="POST">
-    <select>
+<form action="/rating_updated" method="POST">
+    <select name="score">
         <option value="1">1 (min)</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5 (max)</option>
     </select>
-    <input type="submit" value="Submit rating (1-5)">
+    <input type="hidden" name="movie_id" value= "{{ movie_id }}">
+    <input type="submit" value="Submit!">
 </form>
 
 
