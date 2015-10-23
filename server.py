@@ -133,11 +133,40 @@ def update_rating():
     print score
     print user_id
     # Rating.insert().values(score = score, movie_id = movie_id, user_id = user_id)
-
-    rating = Rating(score = score, movie_id = movie_id, user_id = user_id)
-    db.session.add(rating)
+    rating = Rating.query.filter(Rating.user_id == user_id, Rating.movie_id == movie_id).first()
+    print rating
+    if rating:
+        rating.score = score
+    else:
+        rating = Rating(score = score, movie_id = movie_id, user_id = user_id)
+        db.session.add(rating)
     db.session.commit()
-    return render_template("rating_updated.html")
+    return redirect("/movies")
+
+
+def get_common_movies():
+    """This function gets the movies that 2 users have both rated"""
+
+    user_ratings = {}
+    common_ratings = []
+
+    movie = Movie.query.filter_by(title="Toy Story").one()
+    user = User.query.get(1)    # someone we know who hasn't rated TS
+    ratings = user.ratings
+    other_ratings = Rating.query.filter_by(movie_id=m.movie_id).all()
+    other_users = [r.user for r in other_ratings]
+
+    for y in other_ratings:
+        if 
+
+    
+    
+
+    for x in ratings:
+        user_ratings[x.movie_id] = x
+
+
+
 
 
 
